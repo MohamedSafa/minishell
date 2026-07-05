@@ -16,7 +16,7 @@ static void	handle_child_process(t_tree_node *node, t_data *data)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	exec_cmd(node, data->env);
+	exec_cmd(node, data->env, data);
 }
 
 static void	handle_parent_process(pid_t pid, t_data *data)

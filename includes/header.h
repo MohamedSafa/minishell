@@ -25,9 +25,10 @@
 # include <stdlib.h>
 # include <sys/stat.h>
 # include <sys/wait.h>
+# include <termios.h>
 # include <unistd.h>
 
-char			*get_user_input(void);
+char			*get_user_input(t_list_head *n_head);
 char			*copy_env(char *src, t_list_head *head);
 int				array_len(char **env);
 int				validate_identifier(char *arg);
@@ -121,7 +122,7 @@ int				count_quoted_length(char *cmd_line, int i, char quote_flag,
 int				is_word_delimiter(char c);
 
 // command_exec.c
-void			exec_cmd(t_tree_node *node, t_env *env);
+void			exec_cmd(t_tree_node *node, t_env *env, t_data *data);
 int				execute_builtin(t_tree_node *node, t_data *data);
 void			execute_command(t_tree_node *node, t_data *data);
 

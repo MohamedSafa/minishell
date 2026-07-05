@@ -59,11 +59,19 @@ static t_tree_node	*handle_redir_node_case(t_tree_node *left_node,
 		t_tree_node *right_node, t_token *redir_pos, t_data *data)
 {
 	t_tree_node	*temp_right_node;
+	t_tree_node	*remaining_words;
 
 	temp_right_node = right_node;
 	while (temp_right_node->left && temp_right_node->left->type == redir_node)
 		temp_right_node = temp_right_node->left;
-	if (!temp_right_node->left)
+	remaining_words = temp_right_node->left;
+	if (left_node && left_node->type == cmd_node && remaining_words
+		&& remaining_words->type == cmd_node)
+	{
+		left_node->args = merge_args(left_node, remaining_words, data->n_head);
+		temp_right_node->left = left_node;
+	}
+	else if (!remaining_words)
 		temp_right_node->left = left_node;
 	return (create_redir_node(redir_pos, right_node, data));
 }
