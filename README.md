@@ -73,6 +73,18 @@ AI tools (ChatGPT, Claude) were used during the development of this project for:
 - Understanding system call behavior and POSIX standards
 - Generating the evaluation summary documentation
 
+---
+
+## Flowchart
+
+![Flowchart](assets/200.webp)
+
+---
+
+## Tasks
+
+![akoaik](assets/akoaik.png)
+![msafa](assets/msafa.png)
 
 ---
 
