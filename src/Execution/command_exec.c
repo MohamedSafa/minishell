@@ -12,12 +12,25 @@
 
 #include "header.h"
 
-void	exec_cmd(t_tree_node *node, t_env *env)
+static void	trim_args_for_execve(char **args, t_list_head *n_head)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+	{
+		args[i] = my_ft_strtrim(args[i], " \t", n_head);
+		i++;
+	}
+}
+
+void	exec_cmd(t_tree_node *node, t_env *env, t_data *data)
 {
 	char	*cmd_path;
 
 	if (!node || !node->args || !node->args[0])
 		exit(127);
+	trim_args_for_execve(node->args, data->n_head);
 	cmd_path = get_cmd_path(node->args[0], env);
 	if (!cmd_path)
 		handle_cmd_not_found(node->args[0]);

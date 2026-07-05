@@ -1,6 +1,84 @@
-# MINISHELL - COMPLETE EVALUATION SUMMARY
+*This project has been created as part of the 42 curriculum by akoaik, msafa.*
 
-## TABLE OF CONTENTS
+# Minishell
+
+## Description
+
+**Minishell** is a Unix shell implementation written in C that mimics the behavior of Bash. The goal of this project is to understand how a shell works under the hood by building one from scratch, covering process creation, file descriptor management, signal handling, and more.
+
+The shell supports:
+- Execution of external programs and 7 built-in commands (`echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`)
+- Pipes (`|`) for chaining commands
+- Input/output redirections (`<`, `>`, `>>`) and here-documents (`<<`)
+- Single and double quote handling
+- Environment variable expansion (`$VAR`, `$?`)
+- Signal handling (`Ctrl+C`, `Ctrl+\`, `Ctrl+D`)
+- Custom garbage collector for automatic memory management
+- Recursive descent parser with Abstract Syntax Tree (AST) for command representation
+
+## Instructions
+
+### Compilation
+
+```bash
+make
+```
+
+This compiles the `libft` library and the minishell source files, producing a `minishell` executable.
+
+Other available rules:
+- `make clean` — remove object files
+- `make fclean` — remove object files and the executable
+- `make re` — recompile from scratch
+
+### Execution
+
+```bash
+./minishell
+```
+
+You will be presented with an interactive prompt (`minishell$ `) where you can type commands just like in Bash.
+
+### Usage Examples
+
+```bash
+minishell$ echo hello world
+hello world
+
+minishell$ ls -la | grep .c | wc -l
+48
+
+minishell$ cat << EOF > output.txt
+> hello
+> world
+> EOF
+
+minishell$ export VAR="hello"
+minishell$ echo $VAR
+hello
+
+minishell$ exit
+```
+
+## Resources
+- The Bash shell itself
+- [Bash Reference Manual (GNU)](https://www.gnu.org/software/bash/manual/bash.html)
+- [Linux man pages: fork(2), execve(2), pipe(2), dup2(2), waitpid(2), signal(2)](https://man7.org/linux/man-pages/)
+- [Readline Library Documentation](https://tiswww.case.edu/php/chet/readline/rltop.html)
+
+### AI Usage
+
+AI tools (ChatGPT, Claude) were used during the development of this project for:
+- Debugging assistance when tracking down edge cases in signal handling and heredoc implementation
+- Understanding system call behavior and POSIX standards
+- Generating the evaluation summary documentation
+
+
+---
+
+# Technical Documentation
+
+## Table of Contents
 1. [Project Overview](#project-overview)
 2. [Architecture & Design](#architecture--design)
 3. [Complete Execution Flow](#complete-execution-flow)
@@ -16,11 +94,11 @@
 13. [Signal Handling](#signal-handling)
 14. [Environment Variables](#environment-variables)
 15. [Exit Codes](#exit-codes)
-16. [Important Evaluation Questions](#important-evaluation-questions)
+16. [Evaluation Q&A](#evaluation-qa)
 
 ---
 
-## PROJECT OVERVIEW
+## Project Overview
 
 **Minishell** is a Unix shell implementation that mimics the behavior of Bash. It handles:
 - Command execution (external programs + built-ins)
@@ -43,7 +121,7 @@
 
 ---
 
-## ARCHITECTURE & DESIGN
+## Architecture & Design
 
 ### **Project Structure**
 ```
@@ -119,7 +197,7 @@ typedef struct t_env {
 
 ---
 
-## COMPLETE EXECUTION FLOW
+## Complete Execution Flow
 
 ### **Step-by-Step Process**
 
@@ -198,7 +276,7 @@ typedef struct t_env {
 
 ---
 
-## MEMORY MANAGEMENT (GARBAGE COLLECTOR)
+## Memory Management (Garbage Collector)
 
 ### **Why Custom Malloc?**
 Instead of manually tracking every `malloc()` and calling `free()`, the project uses a **garbage collector**.
@@ -266,7 +344,7 @@ char *str = ft_malloc(100, data->n_head);
 
 ---
 
-## TOKENIZATION & PARSING
+## Tokenization & Parsing
 
 ### **Phase 1: Tokenization**
 
@@ -319,7 +397,7 @@ Each token has `expand_flag`:
 
 ---
 
-## ABSTRACT SYNTAX TREE (AST)
+## Abstract Syntax Tree (AST)
 
 ### **Why AST?**
 The AST represents the command structure in a tree format, making it easy to:
@@ -421,7 +499,7 @@ t_tree_node *parse_tokens(token_t *tokens, int count, ...)
 
 ---
 
-## VARIABLE EXPANSION
+## Variable Expansion
 
 ### **What Gets Expanded?**
 - `$VAR` → Value of environment variable VAR
@@ -487,7 +565,7 @@ Result: "Hello msafa, exit=0"
 
 ---
 
-## EXECUTION SYSTEM
+## Execution System
 
 ### **Main Execution Function** [command_exec.c:46]
 
@@ -573,7 +651,7 @@ void exec_cmd(t_tree_node *node, t_env *env)
 
 ---
 
-## BUILT-IN COMMANDS
+## Built-in Commands
 
 **7 Built-ins**: `echo`, `cd`, `pwd`, `export`, `unset`, `env`, `exit`
 
@@ -782,7 +860,7 @@ int ft_exit(char **args, t_data *data)
 
 ---
 
-## REDIRECTIONS
+## Redirections
 
 ### **4 Types**
 1. **Input redirection** (`<`): Read from file
@@ -894,7 +972,7 @@ echo hello > $FILE
 
 ---
 
-## HEREDOC IMPLEMENTATION
+## Heredoc Implementation
 
 ### **Overview**
 Heredoc (`<<`) reads multi-line input from user until delimiter is reached.
@@ -1125,7 +1203,7 @@ int collect_heredocs(t_tree_node *node, t_data *data)
 
 ---
 
-## PIPES
+## Pipes
 
 ### **How Pipes Work**
 
@@ -1265,7 +1343,7 @@ set_exit_code_from_status(data, status);
 
 ---
 
-## SIGNAL HANDLING
+## Signal Handling
 
 ### **Three Signals**
 1. **SIGINT** (Ctrl+C): Interrupt
@@ -1367,7 +1445,7 @@ init_sigaction(&sa);  // Restore interactive signal handlers
 
 ---
 
-## ENVIRONMENT VARIABLES
+## Environment Variables
 
 ### **Initialization** [init_envp.c]
 
@@ -1470,7 +1548,7 @@ unset VAR
 
 ---
 
-## EXIT CODES
+## Exit Codes
 
 ### **Setting Exit Code** [exit_code.c:15]
 
@@ -1537,7 +1615,7 @@ echo $?   # 1
 
 ---
 
-## IMPORTANT EVALUATION QUESTIONS
+## Evaluation Q&A
 
 ### **Q1: Explain the complete flow from user input to command execution.**
 
@@ -1878,7 +1956,7 @@ ft_exit(["arg1", "arg2"], data)
 
 ---
 
-## TESTING SCENARIOS
+## Testing Scenarios
 
 ### **Basic Commands**
 ```bash
@@ -1949,7 +2027,7 @@ EOF
 
 ---
 
-## KEY TAKEAWAYS FOR EVALUATION
+## Key Takeaways
 
 1. **Memory**: Custom garbage collector, two allocators (temp/persistent)
 2. **Parsing**: Recursive descent, builds AST
@@ -1964,4 +2042,9 @@ EOF
 
 ---
 
-**GOOD LUCK WITH YOUR EVALUATION!**
+## Authors
+
+| Author | GitHub |
+|--------|--------|
+| **akoaik** | [github.com/akoaik](https://github.com/alikoaikk) |
+| **msafa** | [github.com/msafa](https://github.com/mohamedsafa) |

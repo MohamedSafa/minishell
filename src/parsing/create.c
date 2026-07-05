@@ -6,13 +6,13 @@
 /*   By: msafa <msafa@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/10 15:55:37 by akoaik            #+#    #+#             */
-/*   Updated: 2025/10/28 01:13:42 by msafa            ###   ########.fr       */
+/*   Updated: 2025/10/28 20:33:08 by msafa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "header.h"
 
-static int	count_cmd_args(token_t *current, token_t *end)
+static int	count_cmd_args(t_token *current, t_token *end)
 {
 	int	count;
 
@@ -26,8 +26,8 @@ static int	count_cmd_args(token_t *current, token_t *end)
 	return (count);
 }
 
-static char	**create_cmd_args(token_t **current, token_t *end,
-		struct list_head *head, t_data *data)
+static char	**create_cmd_args(t_token **current, t_token *end,
+		struct s_list_head *head, t_data *data)
 {
 	char	**args;
 	int		arg_count;
@@ -41,10 +41,7 @@ static char	**create_cmd_args(token_t **current, token_t *end,
 	while (i < arg_count)
 	{
 		if (has_unescaped_dollar((*current)->str))
-		{
 			args[i] = expand_variable((*current)->str, data);
-			args[i] = my_ft_strtrim(args[i], " \t", head);
-		}
 		else
 			args[i] = remove_escape_dollar((*current)->str, data);
 		(*current)++;
@@ -54,7 +51,7 @@ static char	**create_cmd_args(token_t **current, token_t *end,
 	return (args);
 }
 
-t_tree_node	*create_cmd_node(token_t **current, token_t *end,
+t_tree_node	*create_cmd_node(t_token **current, t_token *end,
 		t_list_head *n_head, t_data *data)
 {
 	t_tree_node	*node;
@@ -96,7 +93,7 @@ t_tree_node	*create_pipe_node(t_tree_node *left, t_tree_node *right,
 	return (node);
 }
 
-t_tree_node	*create_redir_node(token_t *redir_pos, t_tree_node *cmd,
+t_tree_node	*create_redir_node(t_token *redir_pos, t_tree_node *cmd,
 		t_data *data)
 {
 	t_tree_node	*node;

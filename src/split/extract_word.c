@@ -5,7 +5,7 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: msafa <msafa@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/25 22:00:00 by akoaik            #+#    #+#             */
+/*   Created: 2025/09/25 22:08:16 by akoaik            #+#    #+#             */
 /*   Updated: 2025/10/27 23:18:16 by msafa            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
@@ -83,7 +83,7 @@ static int	copy_word_content(char *cmd_line, int start, char *word)
 	return (i);
 }
 
-int	extract_complete_word(char *cmd_line, data_handle_args *data_args,
+int	extract_complete_word(char *cmd_line, t_data_handle_args *data_args,
 		char **result, t_data *data)
 {
 	int		total_len;

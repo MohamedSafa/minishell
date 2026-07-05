@@ -12,9 +12,9 @@
 
 #include "header.h"
 
-token_t	*find_redirection(token_t *current, token_t *end)
+t_token	*find_redirection(t_token *current, t_token *end)
 {
-	token_t	*start;
+	t_token	*start;
 
 	start = current;
 	while (start < end)
@@ -27,7 +27,7 @@ token_t	*find_redirection(token_t *current, token_t *end)
 	return (NULL);
 }
 
-static t_tree_node	*parse_left_side(token_t *tokens, token_t *redir_pos,
+static t_tree_node	*parse_left_side(t_token *tokens, t_token *redir_pos,
 		t_list_head *n_head, t_data *data)
 {
 	int	cmd_count;
@@ -40,11 +40,11 @@ static t_tree_node	*parse_left_side(token_t *tokens, token_t *redir_pos,
 	return (NULL);
 }
 
-static t_tree_node	*parse_right_side(token_t *redir_pos, token_t *end,
+static t_tree_node	*parse_right_side(t_token *redir_pos, t_token *end,
 		t_list_head *n_head, t_data *data)
 {
 	int		remaining_count;
-	token_t	*remaining_start;
+	t_token	*remaining_start;
 
 	remaining_start = redir_pos + 2;
 	remaining_count = end - remaining_start;
@@ -56,20 +56,28 @@ static t_tree_node	*parse_right_side(token_t *redir_pos, token_t *end,
 }
 
 static t_tree_node	*handle_redir_node_case(t_tree_node *left_node,
-		t_tree_node *right_node, token_t *redir_pos, t_data *data)
+		t_tree_node *right_node, t_token *redir_pos, t_data *data)
 {
-	t_tree_node	*temp_rihgt_node;
+	t_tree_node	*temp_right_node;
+	t_tree_node	*remaining_words;
 
-	temp_rihgt_node = right_node;
-	while (temp_rihgt_node->left && temp_rihgt_node->left->type == redir_node)
-		temp_rihgt_node = temp_rihgt_node->left;
-	if (!temp_rihgt_node->left)
-		temp_rihgt_node->left = left_node;
+	temp_right_node = right_node;
+	while (temp_right_node->left && temp_right_node->left->type == redir_node)
+		temp_right_node = temp_right_node->left;
+	remaining_words = temp_right_node->left;
+	if (left_node && left_node->type == cmd_node && remaining_words
+		&& remaining_words->type == cmd_node)
+	{
+		left_node->args = merge_args(left_node, remaining_words, data->n_head);
+		temp_right_node->left = left_node;
+	}
+	else if (!remaining_words)
+		temp_right_node->left = left_node;
 	return (create_redir_node(redir_pos, right_node, data));
 }
 
-t_tree_node	*handle_redirection_parsing(token_t *tokens, token_t *redir_pos,
-		token_t *end, t_data *data)
+t_tree_node	*handle_redirection_parsing(t_token *tokens, t_token *redir_pos,
+		t_token *end, t_data *data)
 {
 	t_tree_node	*left_node;
 	t_tree_node	*right_node;

@@ -27,14 +27,15 @@ static int	handle_heredocs(t_tree_node *ast, t_data *data, t_list_head *n_head)
 
 static void	process_prompt(char *prompt, t_list_head *n_head, t_data *data)
 {
-	token_t		*tokens;
+	t_token		*tokens;
 	t_tree_node	*ast;
 	int			token_count;
 
 	tokens = tokenize_input(prompt, data);
 	if (!tokens)
 	{
-		free(prompt);
+		if (isatty(STDIN_FILENO))
+			free(prompt);
 		free_all(n_head);
 		n_head->head = NULL;
 	}
@@ -44,7 +45,8 @@ static void	process_prompt(char *prompt, t_list_head *n_head, t_data *data)
 		ast = parse_tokens(tokens, token_count, n_head, data);
 		if (ast && handle_heredocs(ast, data, n_head) != -1)
 			execute_ast(ast, data);
-		free(prompt);
+		if (isatty(STDIN_FILENO))
+			free(prompt);
 		free_all(n_head);
 		n_head->head = NULL;
 	}
@@ -58,7 +60,7 @@ int	while_prompt(t_list_head *n_head, t_list_head *env_head, t_env *env)
 	init_data(&data, n_head, env, env_head);
 	while (1)
 	{
-		prompt = get_user_input();
+		prompt = get_user_input(n_head);
 		if (!prompt)
 			break ;
 		if (g_signal != 0)
